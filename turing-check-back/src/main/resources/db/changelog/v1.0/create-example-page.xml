@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet author="vssekorin" id="1-0">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="page"/>
+    </preConditions>
+    <insert tableName="page">
+      <column name="name" value="example"/>
+      <column name="description" value="Пример"/>
+      <column name="program">
+        <![CDATA[
+q0, ∧ -> e, T, +1
+e, ∧ -> s, E, +1
+s, ∧ -> t, S, +1
+t, ∧ -> назад, T, -1
+назад, T -> назад, T, -1
+назад, E -> назад, E, -1
+назад, S -> назад, S, -1
+назад, ∧ -> я устал, ∧, +1
+        ]]>
+      </column>
+      <column name="tests">
+        <![CDATA[
+∧ -> TEST
+1 -> 1
+∧ -> ABC
+        ]]>
+      </column>
+      <column name="created" valueComputed="now()"/>
+      <column name="updated" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+</databaseChangeLog>

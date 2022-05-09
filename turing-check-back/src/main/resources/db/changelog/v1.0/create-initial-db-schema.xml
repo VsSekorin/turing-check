@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet author="vssekorin" id="0-0">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="page"/>
+      </not>
+    </preConditions>
+    <createSequence cycle="false" minValue="1" sequenceName="page_seq" startValue="1"/>
+    <createTable tableName="page">
+      <column name="id" type="BIGINT" defaultValueSequenceNext="page_seq">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="page_pkey"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="program" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="tests" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created" type="TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated" type="TIMESTAMP"/>
+    </createTable>
+  </changeSet>
+
+</databaseChangeLog>
