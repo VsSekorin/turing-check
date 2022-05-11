@@ -64,12 +64,11 @@ button:enabled:hover, button[enabled]:hover {
 .search {
   width: 500px;
   margin: auto;
-  /*text-decoration: line-through;*/
   display: flex;
   flex-direction: column;
 }
 
-.search input {
+input {
   outline: 0;
   background: #f2f2f2;
   width: 100%;
@@ -106,6 +105,11 @@ button:enabled:hover, button[enabled]:hover {
 
 .info {
   border-left-style: solid;
+  border-left-color: black;
+}
+
+.good {
+  border-left-style: solid;
   border-left-color: #0fa110;
 }
 
@@ -121,6 +125,7 @@ button:enabled:hover, button[enabled]:hover {
 
 .left {
   width: 60%;
+  padding-left: 10px;
 }
 
 .right {
@@ -136,6 +141,7 @@ button:enabled:hover, button[enabled]:hover {
   content: "";
   display: table;
   clear: both;
+  margin-bottom: 5px;
 }
 
 .result li {

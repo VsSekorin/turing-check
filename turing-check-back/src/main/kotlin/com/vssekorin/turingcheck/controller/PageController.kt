@@ -30,6 +30,8 @@ class PageController(val pageRepository: PageRepository, val turingMachineServic
                 it.description = dto.description
                 it.program = dto.program
                 it.tests = dto.tests
+                it.empty = dto.empty
+                it.initState = dto.initState
                 pageRepository.save(it)
                 ResponseEntity.ok()
             } ?: ResponseEntity.badRequest()
@@ -42,14 +44,13 @@ class PageController(val pageRepository: PageRepository, val turingMachineServic
         val page = pageRepository.findByName(name)
         return if (page != null) {
             ResponseEntity.ok(page.dto())
-        }
-        else {
+        } else {
             ResponseEntity.notFound().build()
         }
     }
 
     @PostMapping("/test")
-    fun test(@RequestBody dto: PageDto): ResponseEntity<CheckResult> =
+    fun test(@RequestBody dto: PageDto): ResponseEntity<Report> =
         if (turingMachineService.checkProgram(dto.program).isEmpty()) {
             ResponseEntity.ok().body(turingMachineService.check(dto))
         } else {

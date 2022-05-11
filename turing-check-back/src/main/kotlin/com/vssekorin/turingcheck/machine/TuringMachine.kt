@@ -1,9 +1,12 @@
 package com.vssekorin.turingcheck.machine
 
-class TuringMachine(private val initState: State, private val program: Set<Rule>): (String) -> Configuration {
+class TuringMachine(
+    private val settings: Settings,
+    private val program: Set<Rule>
+) : (String) -> Configuration {
 
     override fun invoke(word: String): Configuration =
-        process(Configuration(state = initState, position = 0, tape = Tape(word), count = 0))
+        process(Configuration(state = settings.initState, position = 0, tape = Tape(word), count = 0))
 
     private tailrec fun process(conf: Configuration): Configuration {
         val rule: Rule? = program.firstOrNull { it.isSuit(conf.state, conf.tape.current) }
@@ -31,7 +34,7 @@ class TuringMachine(private val initState: State, private val program: Set<Rule>
         )
     } else {
         tape.copy(
-            current = EMPTY,
+            current = settings.empty,
             right = listOf(rule.newSymbol) + tape.right
         )
     }
@@ -44,7 +47,7 @@ class TuringMachine(private val initState: State, private val program: Set<Rule>
         )
     } else {
         tape.copy(
-            current = EMPTY,
+            current = settings.empty,
             left = tape.left + listOf(rule.newSymbol)
         )
     }

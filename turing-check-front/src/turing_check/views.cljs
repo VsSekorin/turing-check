@@ -11,18 +11,13 @@
 (defn a-input [type value prop]
   [:input (merge prop {:type type :value @value :on-change #(reset! value (-> % .-target .-value))})])
 
-(def page-items
-  {:description ["Описание" {:placeholder "Зачем?"}]
-   :program ["Программа (пустышка: ∧, начальное: q0)" {:placeholder "q, a -> p, b, -1" :rows 20}]
-   :tests ["Тесты" {:placeholder "123 -> 321" :rows 20}]})
-
-(defn page-in [field name prop]
+(defn page-in [tag field name prop]
   (let [value (rf/subscribe [:page field])]
     [:div
      [:label name]
-     [:textarea (merge prop
-                       {:value @value
-                        :on-change #(rf/dispatch [:update-page field (-> % .-target .-value)])})]]))
+     [tag (merge prop
+                 {:value @value
+                  :on-change #(rf/dispatch [:update-page field (-> % .-target .-value)])})]]))
 
 (defn start []
   (let [name (atom "")]
@@ -42,7 +37,12 @@
     [:div.page
      [:h3 @name]
      [test-save]
-     (for [[k [name prop]] page-items] ^{:key k} [page-in k name prop])
+     [page-in :textarea :description "Описание" {:placeholder "Зачем?"}]
+     [:div
+      [page-in :input :empty "Пустышка"]
+      [page-in :input :initState "Начальное состояние"]]
+     [page-in :textarea :program "Программа" {:placeholder "q, a -> p, b, -1" :rows 20}]
+     [page-in :textarea :tests "Тесты" {:placeholder "123 -> 321" :rows 20}]
      [test-save]]))
 
 (defn decision->text [decision]
@@ -55,7 +55,7 @@
     "Неизвестно"))
 
 (defn result-item [{:keys [test decision]}]
-  [:li.row
+  [:li {:class [:row (if (= decision "Accepted") :good :error)]}
    [:div.column.left test]
    [:div.column.middle (decision->text decision)]
    [:div.column.right [button "Анализировать" nil {:disabled true}]]])
@@ -77,7 +77,7 @@
   (let [alert (rf/subscribe [:alert])]
     (if (some? @alert)
       (let [[type text] @alert]
-        [:div {:class ["box" type] :on-click #(rf/dispatch [:no-alert])} text]))))
+        [:div {:class [:box type] :on-click #(rf/dispatch [:no-alert])} text]))))
 
 (defn main-panel []
   (let [state (rf/subscribe [:state])]

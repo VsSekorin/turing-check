@@ -1,9 +1,6 @@
 package com.vssekorin.turingcheck.service
 
-sealed interface CheckResult
-
-data class Incorrect(val error: String) : CheckResult
-data class Report(val result: List<TestResult>) : CheckResult
+data class Report(val result: List<TestResult>)
 
 data class TestResult(val test: String, val decision: TestDecision)
 

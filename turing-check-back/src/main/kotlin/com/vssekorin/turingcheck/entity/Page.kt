@@ -26,6 +26,12 @@ data class Page(
 
     @Column(nullable = false)
     var tests: String = "",
+
+    @Column(nullable = false)
+    var empty: String = "∧",
+
+    @Column(nullable = false)
+    var initState: String = "q0",
 ) {
     @CreationTimestamp
     @Column(updatable = false, nullable = false)

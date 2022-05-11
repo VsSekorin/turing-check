@@ -1,19 +1,18 @@
 package com.vssekorin.turingcheck
 
-import com.vssekorin.turingcheck.machine.EMPTY
+import com.vssekorin.turingcheck.machine.Cell
 import com.vssekorin.turingcheck.machine.Tape
 
-typealias WrongLines = List<String>
+fun String.turingWord(empty: Cell): String = trim().replace(" ", empty)
 
-fun <T> List<T>.toPair(): Pair<T, T> {
-    if (this.size != 2) {
-        throw IllegalArgumentException("List is not of length 2")
-    }
-    return Pair(this[0], this[1])
-}
-
-fun String.turingWord() = trim().replace(" ", EMPTY)
-fun Tape.turingWord() = current + right.joinToString(separator = "").dropLastWhile { it.toString() == EMPTY }
+fun Tape.turingWord(empty: Cell): String =
+    current + right.joinToString(separator = "").dropLastWhile { it.toString() == empty }
 
 val arrow: Regex = Regex("\\s*->\\s*")
 val comma: Regex = Regex("\\s*,\\s*")
+
+fun String.head(): Cell = this.first().toString()
+
+fun String.tail(): List<Cell> = this.takeLast(this.length - 1).toList().map { it.toString() }
+
+fun Regex.or(other: Regex) = Regex("${this.pattern}|${other.pattern}")

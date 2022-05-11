@@ -11,3 +11,5 @@
 (def source "https://github.com/VsSekorin/turing-check")
 
 (def example-name "example")
+
+(def http-timeout 60000)
