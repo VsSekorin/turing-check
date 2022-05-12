@@ -31,7 +31,7 @@ class TuringMachineService {
             val (word, expected) = test.split(regex = arrow, limit = 2)
             val actual = machine(word)
             when {
-                actual.count >= STEP_LIMIT -> TestDecision.InfiniteLoop
+                actual.isCycled() -> TestDecision.InfiniteLoop
                 actual.tape.left.dropWhile { it == settings.empty }.isNotEmpty() || actual.position != 0 ->
                     TestDecision.NotStandard
                 actual.tape.turingWord(settings.empty) == expected.turingWord(settings.empty) -> TestDecision.Accepted

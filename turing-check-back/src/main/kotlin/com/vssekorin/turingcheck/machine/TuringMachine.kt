@@ -10,7 +10,7 @@ class TuringMachine(
 
     private tailrec fun process(conf: Configuration): Configuration {
         val rule: Rule? = program.firstOrNull { it.isSuit(conf.state, conf.tape.current) }
-        return if (rule != null && conf.count < STEP_LIMIT) process(step(conf, rule)) else conf
+        return if (rule != null && !conf.isCycled()) process(step(conf, rule)) else conf
     }
 
     private fun step(conf: Configuration, rule: Rule) = Configuration(
