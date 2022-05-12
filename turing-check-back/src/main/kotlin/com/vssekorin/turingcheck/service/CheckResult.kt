@@ -1,10 +1,10 @@
 package com.vssekorin.turingcheck.service
 
-data class Report(val result: List<TestResult>)
+data class Decisions(val result: List<Decision>)
 
-data class TestResult(val test: String, val decision: TestDecision)
+data class Decision(val test: String, val decision: DecisionName)
 
-enum class TestDecision {
+enum class DecisionName {
     Accepted,
     Failed,
     Wrong,

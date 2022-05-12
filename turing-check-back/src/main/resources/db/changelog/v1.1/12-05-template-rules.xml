@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet author="vssekorin" id="12-05-0-0">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="1">
+        SELECT 1 FROM page WHERE name='example'
+      </sqlCheck>
+    </preConditions>
+    <update tableName="page">
+      <column name="program">
+        <![CDATA[
+//комментарий
+//в качестве имён состояний и символов можно использовать любой текст
+//примеры состояний: q0, q', p, состояние1
+//примеры символов: a, B, c', DEF, 1, ʕ•ᴥ•ʔ
+
+q0, ∧ -> e, T, +1
+e, ∧ -> s, E, +1
+s, ∧ -> t, S, +1
+t, ∧ -> назад, T, -1
+
+//пример обобщённого правила
+назад, alpha -> назад, alpha, -1; alpha in {T, E, S}
+
+//можно и посложнее, например,
+//pU, gamma -> q-gamma, 0, +1; gamma in {a, b}, U in {b,c,d,e}
+
+назад, ∧ -> я устал, ∧, +1
+        ]]>
+      </column>
+      <where>name='example'</where>
+    </update>
+  </changeSet>
+
+</databaseChangeLog>

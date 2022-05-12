@@ -1,4 +1,4 @@
-package com.vssekorin.turingcheck.controller.dto
+package com.vssekorin.turingcheck.controller
 
 import com.vssekorin.turingcheck.entity.Page
 

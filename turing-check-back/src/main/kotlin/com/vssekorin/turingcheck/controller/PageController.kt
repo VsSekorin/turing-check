@@ -1,10 +1,9 @@
 package com.vssekorin.turingcheck.controller
 
-import com.vssekorin.turingcheck.controller.dto.PageDto
-import com.vssekorin.turingcheck.controller.dto.dto
 import com.vssekorin.turingcheck.entity.Page
 import com.vssekorin.turingcheck.repository.PageRepository
-import com.vssekorin.turingcheck.service.*
+import com.vssekorin.turingcheck.service.Decisions
+import com.vssekorin.turingcheck.service.TuringMachineService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -50,9 +49,9 @@ class PageController(val pageRepository: PageRepository, val turingMachineServic
     }
 
     @PostMapping("/test")
-    fun test(@RequestBody dto: PageDto): ResponseEntity<Report> =
+    fun test(@RequestBody dto: PageDto): ResponseEntity<Decisions> =
         if (turingMachineService.checkProgram(dto.program).isEmpty()) {
-            ResponseEntity.ok().body(turingMachineService.check(dto))
+            ResponseEntity.ok(turingMachineService.check(dto))
         } else {
             ResponseEntity.badRequest().build()
         }

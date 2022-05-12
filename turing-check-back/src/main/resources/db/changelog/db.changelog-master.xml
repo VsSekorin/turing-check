@@ -12,4 +12,5 @@
     <include file="v1.0/create-initial-db-schema.xml" relativeToChangelogFile="true"/>
     <include file="v1.0/create-example-page.xml" relativeToChangelogFile="true"/>
     <include file="v1.1/11-05-add-settings.xml" relativeToChangelogFile="true"/>
+    <include file="v1.1/12-05-template-rules.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
