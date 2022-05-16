@@ -3,14 +3,20 @@ package com.vssekorin.turingcheck.machine
 class TuringMachine(
     private val settings: Settings,
     private val program: Set<Rule>
-) : (String) -> Configuration {
+) : (String) -> TuringResult {
 
-    override fun invoke(word: String): Configuration =
-        process(Configuration(state = settings.initState, position = 0, tape = Tape(word), count = 0))
+    override fun invoke(word: String): TuringResult {
+        val history = mutableListOf<Configuration>()
+        val start = Configuration(state = settings.initState, position = 0, tape = Tape(word), count = 0)
+        return TuringResult(start, process(start, history), history)
+    }
 
-    private tailrec fun process(conf: Configuration): Configuration {
-        val rule: Rule? = program.firstOrNull { it.isSuit(conf.state, conf.tape.current) }
-        return if (rule != null && !conf.isCycled()) process(step(conf, rule)) else conf
+    private tailrec fun process(conf: Configuration, history: MutableList<Configuration>): Configuration {
+        val rule = program.firstOrNull { it.isSuit(conf.state, conf.tape.current) }
+        if (settings.hasHistory && history.size < 500) {
+            history.add(conf)
+        }
+        return if (rule != null && !conf.isCycled()) process(step(conf, rule), history) else conf
     }
 
     private fun step(conf: Configuration, rule: Rule) = Configuration(

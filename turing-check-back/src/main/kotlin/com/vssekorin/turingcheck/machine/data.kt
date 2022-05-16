@@ -9,10 +9,14 @@ enum class Shift(val delta: Int) {
 
 data class Rule(val state: State, val symbol: Cell, val newState: State, val newSymbol: Cell, val shift: Shift)
 
+data class Definition(val letter: String, val values: List<String>)
+
 data class Tape(val left: List<Cell> = emptyList(), val current: Cell, val right: List<Cell> = emptyList()) {
     constructor(word: String): this(current = word.head(), right = word.tail())
 }
 
 data class Configuration(val state: State, val position: Int, val tape: Tape, val count: Int)
 
-data class Settings(val empty: Cell, val initState: State)
+data class Settings(val empty: Cell, val initState: State, val hasHistory: Boolean)
+
+data class TuringResult(val start: Configuration, val result: Configuration, val history: List<Configuration>)

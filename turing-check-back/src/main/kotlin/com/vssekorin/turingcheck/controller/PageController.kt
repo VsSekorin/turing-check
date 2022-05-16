@@ -1,8 +1,8 @@
 package com.vssekorin.turingcheck.controller
 
+import com.vssekorin.turingcheck.*
 import com.vssekorin.turingcheck.entity.Page
 import com.vssekorin.turingcheck.repository.PageRepository
-import com.vssekorin.turingcheck.service.Decisions
 import com.vssekorin.turingcheck.service.TuringMachineService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -49,12 +49,14 @@ class PageController(val pageRepository: PageRepository, val turingMachineServic
     }
 
     @PostMapping("/test")
-    fun test(@RequestBody dto: PageDto): ResponseEntity<Decisions> =
-        if (turingMachineService.checkProgram(dto.program).isEmpty()) {
+    fun test(@RequestBody dto: PageDto): ResponseEntity<TestResponse> {
+        val incorrectCommands = turingMachineService.checkCommands(dto.program)
+        return if (incorrectCommands.isEmpty()) {
             ResponseEntity.ok(turingMachineService.check(dto))
         } else {
-            ResponseEntity.badRequest().build()
+            ResponseEntity.badRequest().body(ErrorResponse(name = "IncorrectRules", body = incorrectCommands))
         }
+    }
 
     companion object {
         const val EXAMPLE_NAME = "example"

@@ -47,10 +47,10 @@
 
 (defn decision->text [decision]
   (case decision
-    "Accepted" "Принято"
-    "Failed" "Ошибка"
-    "Wrong" "Не тест"
-    "NotStandard" "Нестандартная"
+    "NotTest" "Не тест"
+    "Correct" "Принято"
+    "Incorrect" "Ошибка"
+    "NonStandard" "Нестандартная"
     "InfiniteLoop" "Зацикливание"
     "Неизвестно"))
 
@@ -58,7 +58,7 @@
   [:li {:class [:row (if (= decision "Accepted") :good :error)]}
    [:div.column.left test]
    [:div.column.middle (decision->text decision)]
-   [:div.column.right [button "Анализировать" nil {:disabled true}]]])
+   [:div.column.right [button "Подробнее" nil {:disabled true}]]])
 
 (defn result []
   [:div.result

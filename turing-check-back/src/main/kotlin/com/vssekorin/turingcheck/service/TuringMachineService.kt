@@ -1,45 +1,61 @@
 package com.vssekorin.turingcheck.service
 
-import com.vssekorin.turingcheck.arrow
-import com.vssekorin.turingcheck.controller.PageDto
+import com.vssekorin.turingcheck.*
 import com.vssekorin.turingcheck.machine.*
-import com.vssekorin.turingcheck.turingWord
 import org.springframework.stereotype.Service
 import kotlin.streams.toList
 
 @Service
 class TuringMachineService {
 
-    fun checkProgram(program: String): List<String> = program.lines()
+    fun checkCommands(commands: String): List<String> = commands.lines()
         .filterNot { it.isBlank() || it.isComment() || it.isCommand() }
 
     fun check(page: PageDto): Decisions {
-        val program = page.program.lines()
+        val settings = Settings(page.empty, page.initState, hasHistory = false)
+        val machine = machine(page, settings)
+        val tests = page.tests.lines()
+        val decisionsForCorrect = tests.parallelStream()
+            .filter { it.isNotBlank() }
+            .filter { it.isTest() }
+            .map { defineResult(machine, settings, it).decision }
+            .toList()
+        val decisionsForIncorrect = tests.filterNot { it.isTest() }.map { Decision(it, DecisionName.NotTest) }
+        return Decisions(decisionsForCorrect + decisionsForIncorrect)
+    }
+
+    fun detailed(request: DetailedRequest): DetailedResult {
+        val settings = Settings(request.page.empty, request.page.initState, hasHistory = true)
+        val machine = machine(request.page, settings)
+        return defineResult(machine, settings, request.test)
+    }
+
+    private fun machine(page: PageDto, settings: Settings) = TuringMachine(
+        settings = settings,
+        program = page.program.lines()
             .filterNot { it.isBlank() || it.isComment() }
             .map { rule(it) }
             .flatten().toSet()
-        val settings = Settings(page.empty, page.initState)
-        val machine = TuringMachine(settings = settings, program = program)
-        return Decisions(
-            result = page.tests.lines().parallelStream()
-                .filter { it.isNotBlank() }
-                .map { Decision(it, makeDecision(machine, settings, it)) }
-                .toList()
+    )
+
+    private fun defineResult(machine: TuringMachine, settings: Settings, test: String): DetailedResult {
+        val (word, expected) = test.split(regex = arrow, limit = 2)
+        val (start, result, history) = machine(word)
+        return DetailedResult(
+            decision = Decision(test, makeDecision(result, expected, settings.empty)),
+            start = start,
+            result = result,
+            history = history
         )
     }
 
-    private fun makeDecision(machine: TuringMachine, settings: Settings, test: String): DecisionName =
-        if (test.isTest()) {
-            val (word, expected) = test.split(regex = arrow, limit = 2)
-            val actual = machine(word)
-            when {
-                actual.isCycled() -> DecisionName.InfiniteLoop
-                actual.tape.left.dropWhile { it == settings.empty }.isNotEmpty() || actual.position != 0 ->
-                    DecisionName.NotStandard
-                actual.tape.turingWord(settings.empty) == expected.turingWord(settings.empty) -> DecisionName.Accepted
-                else -> DecisionName.Failed
-            }
-        } else DecisionName.Wrong
+    private fun makeDecision(actual: Configuration, expected: String, empty: Cell) = when {
+        actual.isCycled() -> DecisionName.InfiniteLoop
+        actual.turingWord(empty) != expected -> DecisionName.Incorrect
+        actual.turingWord(empty) == expected && !actual.isStandard(empty) -> DecisionName.NonStandard
+        actual.turingWord(empty) == expected && actual.isStandard(empty) -> DecisionName.Correct
+        else -> DecisionName.Incorrect
+    }
 }
 
 private val commandRegex: Regex =
