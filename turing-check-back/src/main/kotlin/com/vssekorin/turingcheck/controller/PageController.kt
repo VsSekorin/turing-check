@@ -49,12 +49,12 @@ class PageController(val pageRepository: PageRepository, val turingMachineServic
     }
 
     @PostMapping("/test")
-    fun test(@RequestBody dto: PageDto): ResponseEntity<TestResponse> {
+    fun test(@RequestBody dto: PageDto): ResponseEntity<Decisions> {
         val incorrectCommands = turingMachineService.checkCommands(dto.program)
         return if (incorrectCommands.isEmpty()) {
             ResponseEntity.ok(turingMachineService.check(dto))
         } else {
-            ResponseEntity.badRequest().body(ErrorResponse(name = "IncorrectRules", body = incorrectCommands))
+            ResponseEntity.badRequest().build()
         }
     }
 

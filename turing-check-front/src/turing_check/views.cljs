@@ -55,7 +55,7 @@
     "Неизвестно"))
 
 (defn result-item [{:keys [test decision]}]
-  [:li {:class [:row (if (= decision "Accepted") :good :error)]}
+  [:li {:class [:row (if (= decision "Correct") :good :error)]}
    [:div.column.left test]
    [:div.column.middle (decision->text decision)]
    [:div.column.right [button "Подробнее" nil {:disabled true}]]])
